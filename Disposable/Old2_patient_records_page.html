@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Patient Records - DocUCare System</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Animation -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+  />
+  <style>
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <div
+    class="h-screen w-screen flex flex-col bg-cover bg-center p-5"
+    style="background-image: url('assets/bg_alt.png');"
+  >
+    <!-- Top Section with Logo and Navigation -->
+    <div class="h-[15%] w-full flex justify-between items-center">
+      <!-- Logo -->
+        <button onclick="window.location.href='mainMenu.html'" class="flex w-[15%] justify-start rounded bg-slate-100 border border-slate-500 hover:bg-slate-200 transition">
+        <img src="assets/banner.png" alt="Logo" class="p-2 h-full object-contain rounded animate__animated animate__fadeIn" />
+      </button>
+
+      <!-- Title and Buttons -->
+      <div class="flex items-center space-x-4">
+        <h1 class="text-3xl font-bold text-blue-700">Patient Records</h1>
+        <button 
+          onclick="window.location.href='add_patient_page.html'"
+          class="w-12 h-12 bg-green-600 hover:bg-green-700 text-white text-2xl rounded-lg transition-all flex items-center justify-center"
+          title="Add New Patient"
+        >
+          +
+        </button>
+        <button 
+          onclick="window.location.href='mainMenu.html'"
+          class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all"
+        >
+          Main Menu
+        </button>
+      </div>
+    </div>
+
+    <!-- Patient Records Content Area -->
+    <div class="h-[85%] w-full mt-3 bg-slate-100 border border-slate-400 rounded-lg shadow-lg p-6 overflow-y-auto">
+      <!-- Patient Cards Grid -->
+      <div class="grid grid-cols-4 gap-4">
+        
+        <!-- Patient Card 1 -->
+        <div class="bg-white border-2 border-slate-400 rounded-lg p-4 shadow-md">
+          <div class="space-y-2 mb-4">
+            <p class="font-semibold">Patient Name: John Doe</p>
+            <p class="text-sm">Patient ID: P-2025-001</p>
+            <p class="text-sm">Contact No.: 0917-123-4567</p>
+            <p class="text-sm">Emergency Contact: 0918-765-4321</p>
+          </div>
+          <button 
+            onclick="window.location.href='patient_detail_page.html'"
+            class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all"
+          >
+            View Patient Info
+          </button>
+        </div>
+
+        <!-- Patient Card 2 -->
+        <div class="bg-white border-2 border-slate-400 rounded-lg p-4 shadow-md">
+          <div class="space-y-2 mb-4">
+            <p class="font-semibold">Patient Name: Maria Santos</p>
+            <p class="text-sm">Patient ID: P-2025-002</p>
+            <p class="text-sm">Contact No.: 0919-234-5678</p>
+            <p class="text-sm">Emergency Contact: 0920-876-5432</p>
+          </div>
+          <button 
+            onclick="window.location.href='patient_detail_page.html'"
+            class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all"
+          >
+            View Patient Info
+          </button>
+        </div>
+
+        <!-- Patient Card 3 -->
+        <div class="bg-white border-2 border-slate-400 rounded-lg p-4 shadow-md">
+          <div class="space-y-2 mb-4">
+            <p class="font-semibold">Patient Name: Robert Cruz</p>
+            <p class="text-sm">Patient ID: P-2025-003</p>
+            <p class="text-sm">Contact No.: 0921-345-6789</p>
+            <p class="text-sm">Emergency Contact: 0922-987-6543</p>
+          </div>
+          <button 
+            onclick="window.location.href='patient_detail_page.html'"
+            class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all"
+          >
+            View Patient Info
+          </button>
+        </div>
+
+        <!-- Patient Card 4 -->
+        <div class="bg-white border-2 border-slate-400 rounded-lg p-4 shadow-md">
+          <div class="space-y-2 mb-4">
+            <p class="font-semibold">Patient Name: Anna Reyes</p>
+            <p class="text-sm">Patient ID: P-2025-004</p>
+            <p class="text-sm">Contact No.: 0923-456-7890</p>
+            <p class="text-sm">Emergency Contact: 0924-098-7654</p>
+          </div>
+          <button 
+            onclick="window.location.href='patient_detail_page.html'"
+            class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all"
+          >
+            View Patient Info
+          </button>
+        </div>
+
+        <!-- Patient Card 5 -->
+        <div class="bg-white border-2 border-slate-400 rounded-lg p-4 shadow-md">
+          <div class="space-y-2 mb-4">
+            <p class="font-semibold">Patient Name: Michael Tan</p>
+            <p class="text-sm">Patient ID: P-2025-005</p>
+            <p class="text-sm">Contact No.: 0925-567-8901</p>
+            <p class="text-sm">Emergency Contact: 0926-109-8765</p>
+          </div>
+          <button 
+            onclick="window.location.href='patient_detail_page.html'"
+            class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all"
+          >
+            View Patient Info
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

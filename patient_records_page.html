@@ -4,13 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Patient Records - DocUCare System</title>
-  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Animation -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
-  />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
   <style>
     html, body {
       height: 100%;
@@ -19,22 +14,18 @@
   </style>
 </head>
 <body>
-  <div
-    class="h-screen w-screen flex flex-col bg-cover bg-center p-5"
-    style="background-image: url('assets/bg_alt.png');"
-  >
+  <div class="h-screen w-screen flex flex-col bg-cover bg-center p-5" style="background-image: url('assets/bg_alt.png');">
+    
     <!-- Top Section with Logo and Navigation -->
     <div class="h-[15%] w-full flex justify-between items-center">
-      <!-- Logo -->
-        <button onclick="window.location.href='mainMenu.html'" class="flex w-[15%] justify-start rounded bg-slate-100 border border-slate-500 hover:bg-slate-200 transition">
+      <button onclick="window.location.href='mainMenu.html'" class="flex w-[15%] justify-start rounded bg-slate-100 border border-slate-500 hover:bg-slate-200 transition">
         <img src="assets/banner.png" alt="Logo" class="p-2 h-full object-contain rounded animate__animated animate__fadeIn" />
       </button>
 
-      <!-- Title and Buttons -->
       <div class="flex items-center space-x-4">
         <h1 class="text-3xl font-bold text-blue-700">Patient Records</h1>
         <button 
-          onclick="window.location.href='add_patient_page.html'"
+          onclick="openAddPatientModal()"
           class="w-12 h-12 bg-green-600 hover:bg-green-700 text-white text-2xl rounded-lg transition-all flex items-center justify-center"
           title="Add New Patient"
         >
@@ -51,90 +42,168 @@
 
     <!-- Patient Records Content Area -->
     <div class="h-[85%] w-full mt-3 bg-slate-100 border border-slate-400 rounded-lg shadow-lg p-6 overflow-y-auto">
-      <!-- Patient Cards Grid -->
-      <div class="grid grid-cols-4 gap-4">
-        
-        <!-- Patient Card 1 -->
-        <div class="bg-white border-2 border-slate-400 rounded-lg p-4 shadow-md">
-          <div class="space-y-2 mb-4">
-            <p class="font-semibold">Patient Name: John Doe</p>
-            <p class="text-sm">Patient ID: P-2025-001</p>
-            <p class="text-sm">Contact No.: 0917-123-4567</p>
-            <p class="text-sm">Emergency Contact: 0918-765-4321</p>
-          </div>
-          <button 
-            onclick="window.location.href='patient_detail_page.html'"
-            class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all"
-          >
-            View Patient Info
-          </button>
-        </div>
-
-        <!-- Patient Card 2 -->
-        <div class="bg-white border-2 border-slate-400 rounded-lg p-4 shadow-md">
-          <div class="space-y-2 mb-4">
-            <p class="font-semibold">Patient Name: Maria Santos</p>
-            <p class="text-sm">Patient ID: P-2025-002</p>
-            <p class="text-sm">Contact No.: 0919-234-5678</p>
-            <p class="text-sm">Emergency Contact: 0920-876-5432</p>
-          </div>
-          <button 
-            onclick="window.location.href='patient_detail_page.html'"
-            class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all"
-          >
-            View Patient Info
-          </button>
-        </div>
-
-        <!-- Patient Card 3 -->
-        <div class="bg-white border-2 border-slate-400 rounded-lg p-4 shadow-md">
-          <div class="space-y-2 mb-4">
-            <p class="font-semibold">Patient Name: Robert Cruz</p>
-            <p class="text-sm">Patient ID: P-2025-003</p>
-            <p class="text-sm">Contact No.: 0921-345-6789</p>
-            <p class="text-sm">Emergency Contact: 0922-987-6543</p>
-          </div>
-          <button 
-            onclick="window.location.href='patient_detail_page.html'"
-            class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all"
-          >
-            View Patient Info
-          </button>
-        </div>
-
-        <!-- Patient Card 4 -->
-        <div class="bg-white border-2 border-slate-400 rounded-lg p-4 shadow-md">
-          <div class="space-y-2 mb-4">
-            <p class="font-semibold">Patient Name: Anna Reyes</p>
-            <p class="text-sm">Patient ID: P-2025-004</p>
-            <p class="text-sm">Contact No.: 0923-456-7890</p>
-            <p class="text-sm">Emergency Contact: 0924-098-7654</p>
-          </div>
-          <button 
-            onclick="window.location.href='patient_detail_page.html'"
-            class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all"
-          >
-            View Patient Info
-          </button>
-        </div>
-
-        <!-- Patient Card 5 -->
-        <div class="bg-white border-2 border-slate-400 rounded-lg p-4 shadow-md">
-          <div class="space-y-2 mb-4">
-            <p class="font-semibold">Patient Name: Michael Tan</p>
-            <p class="text-sm">Patient ID: P-2025-005</p>
-            <p class="text-sm">Contact No.: 0925-567-8901</p>
-            <p class="text-sm">Emergency Contact: 0926-109-8765</p>
-          </div>
-          <button 
-            onclick="window.location.href='patient_detail_page.html'"
-            class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all"
-          >
-            View Patient Info
-          </button>
-        </div>
+      <div id="patientCardsContainer" class="grid grid-cols-4 gap-4">
+        <!-- Patient cards will be dynamically rendered here -->
       </div>
     </div>
   </div>
+
+  <!-- Add Patient Modal -->
+  <div id="addPatientModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-2xl w-[600px] max-h-[90vh] overflow-y-auto animate__animated animate__fadeIn animate__faster">
+      
+      <!-- Modal Header -->
+      <div class="bg-blue-600 text-white p-4 rounded-t-lg">
+        <h2 class="text-2xl font-bold text-center">Add Patient</h2>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6">
+        <form id="addPatientForm">
+          
+          <!-- First Name -->
+          <div class="mb-4">
+            <label class="block font-semibold mb-2">First <span class="text-red-500">*</span></label>
+            <input type="text" id="firstName" class="w-full border border-gray-300 p-2 rounded" required>
+          </div>
+
+          <!-- Last Name -->
+          <div class="mb-4">
+            <label class="block font-semibold mb-2">Last <span class="text-red-500">*</span></label>
+            <input type="text" id="lastName" class="w-full border border-gray-300 p-2 rounded" required>
+          </div>
+
+          <!-- Age, Gender, Blood Type Row -->
+          <div class="grid grid-cols-3 gap-3 mb-4">
+            <div>
+              <label class="block font-semibold mb-2">Age <span class="text-red-500">*</span></label>
+              <input type="number" id="age" class="w-full border border-gray-300 p-2 rounded" required min="0" max="150">
+            </div>
+            <div>
+              <label class="block font-semibold mb-2">Gender <span class="text-red-500">*</span></label>
+              <input type="text" id="gender" class="w-full border border-gray-300 p-2 rounded" required>
+            </div>
+            <div>
+              <label class="block font-semibold mb-2">Bloodtype:</label>
+              <input type="text" id="bloodtype" class="w-full border border-gray-300 p-2 rounded" placeholder="e.g., O+">
+            </div>
+          </div>
+
+          <!-- Contact -->
+          <div class="mb-4">
+            <label class="block font-semibold mb-2">Contact <span class="text-red-500">*</span></label>
+            <input type="text" id="contact" class="w-full border border-gray-300 p-2 rounded" required placeholder="e.g., 0917-123-4567">
+          </div>
+
+          <!-- Allergies -->
+          <div class="mb-4">
+            <label class="block font-semibold mb-2">Allergies (if any)</label>
+            <input type="text" id="allergies" class="w-full border border-gray-300 p-2 rounded" placeholder="Optional">
+          </div>
+
+          <!-- Medical Conditions -->
+          <div class="mb-6">
+            <label class="block font-semibold mb-2">Medical Conditions (if any)</label>
+            <input type="text" id="medicalConditions" class="w-full border border-gray-300 p-2 rounded" placeholder="Optional">
+          </div>
+
+          <!-- Buttons -->
+          <div class="flex gap-3 justify-center">
+            <button type="submit" class="px-8 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all">Save</button>
+            <button type="button" onclick="closeAddPatientModal()" class="px-8 py-2 bg-white hover:bg-gray-100 border border-gray-300 rounded-lg transition-all">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Patient data array
+    let patients = [
+      { id: "P-2025-001", firstName: "John", lastName: "Doe", age: 35, gender: "Male", bloodtype: "O+", contact: "0917-123-4567", emergencyContact: "0918-765-4321", allergies: "None", medicalConditions: "None" },
+      { id: "P-2025-002", firstName: "Maria", lastName: "Santos", age: 28, gender: "Female", bloodtype: "A+", contact: "0919-234-5678", emergencyContact: "0920-876-5432", allergies: "Penicillin", medicalConditions: "Asthma" },
+      { id: "P-2025-003", firstName: "Robert", lastName: "Cruz", age: 42, gender: "Male", bloodtype: "B+", contact: "0921-345-6789", emergencyContact: "0922-987-6543", allergies: "None", medicalConditions: "Diabetes" },
+      { id: "P-2025-004", firstName: "Anna", lastName: "Reyes", age: 31, gender: "Female", bloodtype: "AB+", contact: "0923-456-7890", emergencyContact: "0924-098-7654", allergies: "Shellfish", medicalConditions: "None" },
+      { id: "P-2025-005", firstName: "Michael", lastName: "Tan", age: 55, gender: "Male", bloodtype: "O-", contact: "0925-567-8901", emergencyContact: "0926-109-8765", allergies: "None", medicalConditions: "Hypertension" }
+    ];
+
+    // Generate next patient ID
+    function generatePatientID() {
+      if (patients.length === 0) {
+        return "P-2025-001";
+      }
+      
+      const lastID = patients[0].id;
+      const lastNumber = parseInt(lastID.split('-')[2]);
+      const nextNumber = lastNumber + 1;
+      return `P-2025-${String(nextNumber).padStart(3, '0')}`;
+    }
+
+    // Render patient cards
+    function renderPatientCards() {
+      const container = document.getElementById('patientCardsContainer');
+      
+      container.innerHTML = patients.map(patient => `
+        <div class="bg-white border-2 border-slate-400 rounded-lg p-4 shadow-md">
+          <div class="space-y-2 mb-4">
+            <p class="font-semibold">Patient Name: ${patient.firstName} ${patient.lastName}</p>
+            <p class="text-sm">Patient ID: ${patient.id}</p>
+            <p class="text-sm">Contact No.: ${patient.contact}</p>
+            <p class="text-sm">Emergency Contact: ${patient.emergencyContact || 'N/A'}</p>
+          </div>
+          <button 
+            onclick="window.location.href='patient_detail_page.html'"
+            class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all"
+          >
+            View Patient Info
+          </button>
+        </div>
+      `).join('');
+    }
+
+    // Open modal
+    function openAddPatientModal() {
+      document.getElementById('addPatientModal').classList.remove('hidden');
+    }
+
+    // Close modal
+    function closeAddPatientModal() {
+      document.getElementById('addPatientModal').classList.add('hidden');
+      document.getElementById('addPatientForm').reset();
+    }
+
+    // Handle form submission
+    document.getElementById('addPatientForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const newPatient = {
+        id: generatePatientID(),
+        firstName: document.getElementById('firstName').value.trim(),
+        lastName: document.getElementById('lastName').value.trim(),
+        age: parseInt(document.getElementById('age').value),
+        gender: document.getElementById('gender').value.trim(),
+        bloodtype: document.getElementById('bloodtype').value.trim() || 'N/A',
+        contact: document.getElementById('contact').value.trim(),
+        emergencyContact: '',
+        allergies: document.getElementById('allergies').value.trim() || 'None',
+        medicalConditions: document.getElementById('medicalConditions').value.trim() || 'None'
+      };
+      
+      // Add to beginning of array
+      patients.unshift(newPatient);
+      
+      // Re-render cards
+      renderPatientCards();
+      
+      // Close modal
+      closeAddPatientModal();
+      
+      // Show success message
+      alert(`Patient ${newPatient.firstName} ${newPatient.lastName} (${newPatient.id}) added successfully!`);
+    });
+
+    // Initialize
+    renderPatientCards();
+  </script>
 </body>
 </html>

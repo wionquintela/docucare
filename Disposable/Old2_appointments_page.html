@@ -334,8 +334,8 @@
       const doctor = doctors.find(d => d.id === doctorId);
       
       // Validate doctor availability
-      const selectedAppointmentDate = new Date(date);
-      const dayName = selectedAppointmentDate.toLocaleDateString('en-US', { weekday: 'long' });
+      const selectedDate = new Date(date);
+      const dayName = selectedDate.toLocaleDateString('en-US', { weekday: 'long' });
       
       if (!doctor.schedule[dayName]) {
         alert(`${doctor.name} is not available on ${dayName}. Please select a different date or doctor.`);
@@ -434,16 +434,9 @@
     }
 
     function selectDate(dateStr) {
-      // If clicking the same date, deselect it
-      if (selectedDate === dateStr) {
-        selectedDate = null;
-        renderCalendar();
-        renderAppointments(); // Show all appointments
-      } else {
-        selectedDate = dateStr;
-        renderCalendar();
-        renderAppointments(dateStr); // Show filtered appointments
-      }
+      selectedDate = dateStr;
+      renderCalendar();
+      renderAppointments(dateStr);
     }
 
     function previousMonth() {
