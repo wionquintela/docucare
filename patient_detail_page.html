@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Patient Details - DocUCare System</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Animation -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+  />
+  <style>
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <div
+    class="h-screen w-screen flex flex-col bg-cover bg-center p-5"
+    style="background-image: url('assets/bg_alt.png');"
+  >
+    <!-- Top Section with Logo and Navigation -->
+    <div class="h-[15%] w-full flex justify-between items-center">
+      <!-- Logo -->
+      <div class="flex w-[15%] justify-start rounded bg-slate-100 border border-slate-500">
+        <img
+          src="assets/banner.png"
+          alt="Logo"
+          class="p-2 h-full object-contain rounded animate__animated animate__fadeIn"
+        />
+      </div>
+
+      <!-- Title and Buttons -->
+      <div class="flex items-center space-x-4">
+        <h1 class="text-3xl font-bold text-blue-700">Patient Details</h1>
+        <button 
+          onclick="window.location.href='patient_records_page.html'"
+          class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all"
+        >
+          Back to Records
+        </button>
+        <button 
+          onclick="window.location.href='mainMenu.html'"
+          class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all"
+        >
+          Main Menu
+        </button>
+      </div>
+    </div>
+
+    <!-- Patient Details Content Area -->
+    <div class="h-[85%] w-full mt-3 bg-slate-100 border border-slate-400 rounded-lg shadow-lg p-6 overflow-y-auto">
+      <div class="text-center text-gray-500 text-xl">
+        <!-- Patient detail content will be added here -->
+        <p>Patient information will be displayed here</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
