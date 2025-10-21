@@ -83,9 +83,75 @@
         </div>
 
         <!-- Add Appointment Button -->
-        <button onclick="window.location.href='addAppointment.html'" class="bg-green-600 hover:bg-green-700 text-white text-lg font-semibold py-4 rounded-lg transition-all shadow-lg">
+        <button onclick="openAddAppointmentModal()" class="bg-green-600 hover:bg-green-700 text-white text-lg font-semibold py-4 rounded-lg transition-all shadow-lg">
           Add an appointment
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Appointment Modal -->
+  <div id="addAppointmentModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-2xl w-[500px] animate__animated animate__fadeIn animate__faster">
+      <div class="bg-blue-600 text-white p-4 rounded-t-lg flex items-center gap-3">
+        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
+          <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path>
+        </svg>
+        <h2 class="text-2xl font-bold">Add Appointment</h2>
+      </div>
+
+      <div class="p-6">
+        <form id="addAppointmentForm">
+          <div class="space-y-4">
+            
+            <!-- Patient Name -->
+            <div>
+              <label class="block font-semibold mb-2">Patient Name:</label>
+              <select id="patientSelect" class="w-full border border-gray-300 p-2 rounded" required>
+                <option value="">Select patient</option>
+              </select>
+            </div>
+
+            <!-- Date -->
+            <div>
+              <label class="block font-semibold mb-2">Date:</label>
+              <input type="date" id="appointmentDateInput" class="w-full border border-gray-300 p-2 rounded" required>
+            </div>
+
+            <!-- Doctor Name -->
+            <div>
+              <label class="block font-semibold mb-2">DoctorsName:</label>
+              <select id="doctorSelect" class="w-full border border-gray-300 p-2 rounded" required onchange="updateAvailableTimes()">
+                <option value="">Select doctor</option>
+              </select>
+            </div>
+
+            <!-- Time -->
+            <div>
+              <label class="block font-semibold mb-2">Time:</label>
+              <div class="flex gap-2">
+                <input type="time" id="appointmentTime" class="flex-1 border border-gray-300 p-2 rounded" required>
+                <select id="timePeriod" class="border border-gray-300 p-2 rounded" required>
+                  <option value="AM">AM</option>
+                  <option value="PM">PM</option>
+                </select>
+              </div>
+              <p id="scheduleNote" class="text-xs text-gray-500 mt-1"></p>
+            </div>
+
+            <!-- Notes -->
+            <div>
+              <label class="block font-semibold mb-2">Notes:</label>
+              <input type="text" id="appointmentNotes" class="w-full border border-gray-300 p-2 rounded" placeholder="Optional notes">
+            </div>
+          </div>
+
+          <div class="flex gap-3 justify-center mt-6">
+            <button type="submit" class="px-8 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all">Save</button>
+            <button type="button" onclick="closeAddAppointmentModal()" class="px-8 py-2 bg-white hover:bg-gray-100 border border-gray-300 rounded-lg transition-all">Cancel</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -111,10 +177,10 @@
           <div class="mb-4">
             <label class="block font-semibold mb-2">Patient Info</label>
             <div class="grid grid-cols-2 gap-3">
-              <input type="text" id="patientName" class="border border-gray-300 p-2 rounded" placeholder="Patient Name" readonly>
-              <input type="text" id="patientID" class="border border-gray-300 p-2 rounded" placeholder="Patient ID" readonly>
-              <input type="text" id="patientContact" class="border border-gray-300 p-2 rounded" placeholder="Contact Number" readonly>
-              <input type="text" id="appointmentDate" class="border border-gray-300 p-2 rounded" placeholder="Appointment Date" readonly>
+              <input type="text" id="consultPatientName" class="border border-gray-300 p-2 rounded" placeholder="Patient Name" readonly>
+              <input type="text" id="consultPatientID" class="border border-gray-300 p-2 rounded" placeholder="Patient ID" readonly>
+              <input type="text" id="consultPatientContact" class="border border-gray-300 p-2 rounded" placeholder="Contact Number" readonly>
+              <input type="text" id="consultAppointmentDate" class="border border-gray-300 p-2 rounded" placeholder="Appointment Date" readonly>
             </div>
           </div>
 
@@ -147,17 +213,153 @@
   </div>
 
   <script>
-    // Sample appointments data
+    // Sample data
+    const patients = [
+      { id: "P-2025-001", name: "John Doe", contact: "0917-123-4567" },
+      { id: "P-2025-002", name: "Maria Santos", contact: "0919-234-5678" },
+      { id: "P-2025-003", name: "Robert Cruz", contact: "0921-345-6789" },
+      { id: "P-2025-004", name: "Anna Reyes", contact: "0923-456-7890" }
+    ];
+
+    const doctors = [
+      { 
+        id: "12345-DR",
+        name: "Dr. Livesey",
+        schedule: {
+          Monday: { start: "09:00", startPeriod: "am", end: "05:00", endPeriod: "pm" },
+          Tuesday: { start: "09:00", startPeriod: "am", end: "05:00", endPeriod: "pm" },
+          Wednesday: { start: "09:00", startPeriod: "am", end: "05:00", endPeriod: "pm" }
+        }
+      },
+      { 
+        id: "12348-DR",
+        name: "Dr. yve",
+        schedule: {
+          Thursday: { start: "10:00", startPeriod: "am", end: "06:00", endPeriod: "pm" },
+          Friday: { start: "10:00", startPeriod: "am", end: "06:00", endPeriod: "pm" }
+        }
+      },
+      { 
+        id: "12349-DR",
+        name: "Dr. Lee",
+        schedule: {
+          Monday: { start: "08:00", startPeriod: "am", end: "04:00", endPeriod: "pm" },
+          Wednesday: { start: "08:00", startPeriod: "am", end: "04:00", endPeriod: "pm" },
+          Friday: { start: "08:00", startPeriod: "am", end: "04:00", endPeriod: "pm" }
+        }
+      }
+    ];
+
     let appointments = [
-      { id: 1, patientName: "John Doe", patientID: "P-2025-001", contact: "0917-123-4567", date: "2025-10-25", consultation: null },
-      { id: 2, patientName: "Maria Santos", patientID: "P-2025-002", contact: "0919-234-5678", date: "2025-10-26", consultation: null },
-      { id: 3, patientName: "Robert Cruz", patientID: "P-2025-003", contact: "0921-345-6789", date: "2025-10-25", consultation: null },
-      { id: 4, patientName: "Anna Reyes", patientID: "P-2025-004", contact: "0923-456-7890", date: "2025-10-27", consultation: null }
+      { id: 1, patientName: "John Doe", patientID: "P-2025-001", contact: "0917-123-4567", date: "2025-10-25", time: "10:00 AM", doctor: "Dr. Livesey", notes: "", consultation: null },
+      { id: 2, patientName: "Maria Santos", patientID: "P-2025-002", contact: "0919-234-5678", date: "2025-10-26", time: "02:00 PM", doctor: "Dr. yve", notes: "", consultation: null },
+      { id: 3, patientName: "Robert Cruz", patientID: "P-2025-003", contact: "0921-345-6789", date: "2025-10-25", time: "11:00 AM", doctor: "Dr. Lee", notes: "", consultation: null },
+      { id: 4, patientName: "Anna Reyes", patientID: "P-2025-004", contact: "0923-456-7890", date: "2025-10-27", time: "03:00 PM", doctor: "Dr. Livesey", notes: "", consultation: null }
     ];
 
     let currentDate = new Date();
     let selectedDate = null;
     let currentAppointment = null;
+
+    // Initialize dropdowns
+    function initializeDropdowns() {
+      const patientSelect = document.getElementById('patientSelect');
+      const doctorSelect = document.getElementById('doctorSelect');
+      
+      patients.forEach(patient => {
+        const option = document.createElement('option');
+        option.value = patient.id;
+        option.textContent = patient.name;
+        patientSelect.appendChild(option);
+      });
+      
+      doctors.forEach(doctor => {
+        const option = document.createElement('option');
+        option.value = doctor.id;
+        option.textContent = doctor.name;
+        doctorSelect.appendChild(option);
+      });
+    }
+
+    // Update available times based on selected doctor and date
+    function updateAvailableTimes() {
+      const doctorId = document.getElementById('doctorSelect').value;
+      const dateInput = document.getElementById('appointmentDateInput').value;
+      const scheduleNote = document.getElementById('scheduleNote');
+      
+      if (!doctorId || !dateInput) {
+        scheduleNote.textContent = '';
+        return;
+      }
+      
+      const doctor = doctors.find(d => d.id === doctorId);
+      const selectedDate = new Date(dateInput);
+      const dayName = selectedDate.toLocaleDateString('en-US', { weekday: 'long' });
+      
+      if (doctor.schedule[dayName]) {
+        const schedule = doctor.schedule[dayName];
+        scheduleNote.textContent = `${doctor.name} is available on ${dayName} from ${schedule.start} ${schedule.startPeriod} to ${schedule.end} ${schedule.endPeriod}`;
+        scheduleNote.classList.remove('text-red-500');
+        scheduleNote.classList.add('text-green-600');
+      } else {
+        scheduleNote.textContent = `${doctor.name} is not available on ${dayName}`;
+        scheduleNote.classList.remove('text-green-600');
+        scheduleNote.classList.add('text-red-500');
+      }
+    }
+
+    // Add appointment modal functions
+    function openAddAppointmentModal() {
+      document.getElementById('addAppointmentModal').classList.remove('hidden');
+    }
+
+    function closeAddAppointmentModal() {
+      document.getElementById('addAppointmentModal').classList.add('hidden');
+      document.getElementById('addAppointmentForm').reset();
+      document.getElementById('scheduleNote').textContent = '';
+    }
+
+    // Handle add appointment form submission
+    document.getElementById('addAppointmentForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const patientId = document.getElementById('patientSelect').value;
+      const date = document.getElementById('appointmentDateInput').value;
+      const doctorId = document.getElementById('doctorSelect').value;
+      const time = document.getElementById('appointmentTime').value;
+      const period = document.getElementById('timePeriod').value;
+      const notes = document.getElementById('appointmentNotes').value;
+      
+      const patient = patients.find(p => p.id === patientId);
+      const doctor = doctors.find(d => d.id === doctorId);
+      
+      // Validate doctor availability
+      const selectedDate = new Date(date);
+      const dayName = selectedDate.toLocaleDateString('en-US', { weekday: 'long' });
+      
+      if (!doctor.schedule[dayName]) {
+        alert(`${doctor.name} is not available on ${dayName}. Please select a different date or doctor.`);
+        return;
+      }
+      
+      const newAppointment = {
+        id: appointments.length + 1,
+        patientName: patient.name,
+        patientID: patient.id,
+        contact: patient.contact,
+        date: date,
+        time: `${time} ${period}`,
+        doctor: doctor.name,
+        notes: notes,
+        consultation: null
+      };
+      
+      appointments.push(newAppointment);
+      renderAppointments(selectedDate);
+      renderCalendar();
+      closeAddAppointmentModal();
+      alert('Appointment added successfully!');
+    });
 
     // Render appointments
     function renderAppointments(filterDate = null) {
@@ -172,14 +374,17 @@
       }
 
       container.innerHTML = filteredAppointments.map(app => `
-        <div class="bg-white border-2 border-slate-400 rounded-lg p-4 flex items-center justify-between">
-          <div class="flex items-center gap-4 flex-1">
+        <div class="bg-white border-2 border-slate-400 rounded-lg p-4">
+          <div class="flex items-center justify-between mb-2">
             <span class="font-semibold text-lg">${app.patientName}</span>
-            <span class="text-gray-600">${formatDate(app.date)}</span>
+            <span class="text-gray-600">${formatDate(app.date)} - ${app.time}</span>
           </div>
-          <button onclick="openConsultModal(${app.id})" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all">
-            Consult
-          </button>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-600">Doctor: ${app.doctor}</span>
+            <button onclick="openConsultModal(${app.id})" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all">
+              Consult
+            </button>
+          </div>
         </div>
       `).join('');
     }
@@ -217,10 +422,10 @@
         const hasAppointment = appointments.some(app => app.date === dateStr);
         
         html += `
-          <div class="calendar-day flex items-center justify-center text-sm ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}" 
+          <div class="calendar-day flex items-center justify-center text-sm relative ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}" 
                onclick="selectDate('${dateStr}')">
             ${day}
-            ${hasAppointment ? '<div class="w-1 h-1 bg-blue-600 rounded-full absolute"></div>' : ''}
+            ${hasAppointment ? '<div class="w-1 h-1 bg-blue-600 rounded-full absolute bottom-1"></div>' : ''}
           </div>
         `;
       }
@@ -244,14 +449,14 @@
       renderCalendar();
     }
 
-    // Modal functions
+    // Consultation modal functions
     function openConsultModal(appointmentId) {
       currentAppointment = appointments.find(app => app.id === appointmentId);
       
-      document.getElementById('patientName').value = currentAppointment.patientName;
-      document.getElementById('patientID').value = currentAppointment.patientID;
-      document.getElementById('patientContact').value = currentAppointment.contact;
-      document.getElementById('appointmentDate').value = formatDate(currentAppointment.date);
+      document.getElementById('consultPatientName').value = currentAppointment.patientName;
+      document.getElementById('consultPatientID').value = currentAppointment.patientID;
+      document.getElementById('consultPatientContact').value = currentAppointment.contact;
+      document.getElementById('consultAppointmentDate').value = formatDate(currentAppointment.date);
       
       if (currentAppointment.consultation) {
         document.getElementById('symptoms').value = currentAppointment.consultation.symptoms;
@@ -287,7 +492,11 @@
       closeConsultModal();
     });
 
+    // Date input change listener
+    document.getElementById('appointmentDateInput').addEventListener('change', updateAvailableTimes);
+
     // Initialize
+    initializeDropdowns();
     renderAppointments();
     renderCalendar();
   </script>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Appointments - DocUCare System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  <style>
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+    .calendar-day {
+      aspect-ratio: 1;
+      border: 1px solid #cbd5e1;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .calendar-day:hover {
+      background-color: #dbeafe;
+    }
+    .calendar-day.selected {
+      background-color: #3b82f6;
+      color: white;
+      font-weight: bold;
+    }
+    .calendar-day.today {
+      background-color: #fef3c7;
+    }
+  </style>
+</head>
+<body>
+  <div class="h-screen w-screen flex flex-col bg-cover bg-center p-5" style="background-image: url('assets/bg_alt.png');">
+    
+    <!-- Top Navigation -->
+    <div class="h-[15%] w-full flex justify-between items-center">
+      <button onclick="window.location.href='mainMenu.html'" class="flex w-[15%] justify-start rounded bg-slate-100 border border-slate-500 hover:bg-slate-200 transition">
+        <img src="assets/banner.png" alt="Logo" class="p-2 h-full object-contain rounded animate__animated animate__fadeIn" />
+      </button>
+      
+      <h1 class="text-3xl font-bold text-blue-700">Appointments</h1>
+      
+      <button onclick="window.location.href='mainMenu.html'" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all">
+        Main Menu
+      </button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="h-[85%] w-full flex gap-3 mt-3">
+      
+      <!-- Left Panel - Appointments List -->
+      <div class="w-[55%] h-full bg-slate-100 border border-slate-400 rounded-lg shadow-lg p-4 overflow-y-auto">
+        <div id="appointmentsList" class="space-y-3">
+          <!-- Appointments will be rendered here -->
+        </div>
+      </div>
+
+      <!-- Right Panel - Calendar & Add Button -->
+      <div class="w-[45%] h-full flex flex-col gap-3">
+        
+        <!-- Calendar -->
+        <div class="bg-slate-100 border border-slate-400 rounded-lg shadow-lg p-4 flex-1">
+          <div class="flex justify-between items-center mb-3">
+            <button onclick="previousMonth()" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded">←</button>
+            <h2 class="text-xl font-bold text-center" id="calendarMonth"></h2>
+            <button onclick="nextMonth()" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded">→</button>
+          </div>
+          
+          <!-- Days of Week -->
+          <div class="grid grid-cols-7 gap-1 mb-2">
+            <div class="text-center font-semibold text-sm">Sun</div>
+            <div class="text-center font-semibold text-sm">Mon</div>
+            <div class="text-center font-semibold text-sm">Tue</div>
+            <div class="text-center font-semibold text-sm">Wed</div>
+            <div class="text-center font-semibold text-sm">Thu</div>
+            <div class="text-center font-semibold text-sm">Fri</div>
+            <div class="text-center font-semibold text-sm">Sat</div>
+          </div>
+          
+          <!-- Calendar Days -->
+          <div id="calendarDays" class="grid grid-cols-7 gap-1"></div>
+        </div>
+
+        <!-- Add Appointment Button -->
+        <button onclick="window.location.href='addAppointment.html'" class="bg-green-600 hover:bg-green-700 text-white text-lg font-semibold py-4 rounded-lg transition-all shadow-lg">
+          Add an appointment
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Consultation Modal -->
+  <div id="consultModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-2xl w-[600px] max-h-[90vh] overflow-y-auto animate__animated animate__fadeIn animate__faster">
+      
+      <!-- Modal Header -->
+      <div class="bg-blue-600 text-white p-4 rounded-t-lg flex items-center gap-3">
+        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
+          <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path>
+        </svg>
+        <h2 class="text-2xl font-bold">Add Consultation</h2>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6">
+        <form id="consultForm">
+          
+          <!-- Patient Info -->
+          <div class="mb-4">
+            <label class="block font-semibold mb-2">Patient Info</label>
+            <div class="grid grid-cols-2 gap-3">
+              <input type="text" id="patientName" class="border border-gray-300 p-2 rounded" placeholder="Patient Name" readonly>
+              <input type="text" id="patientID" class="border border-gray-300 p-2 rounded" placeholder="Patient ID" readonly>
+              <input type="text" id="patientContact" class="border border-gray-300 p-2 rounded" placeholder="Contact Number" readonly>
+              <input type="text" id="appointmentDate" class="border border-gray-300 p-2 rounded" placeholder="Appointment Date" readonly>
+            </div>
+          </div>
+
+          <!-- Symptoms -->
+          <div class="mb-4">
+            <label class="block font-semibold mb-2">Symptoms <span class="text-red-500">*</span></label>
+            <input type="text" id="symptoms" class="w-full border border-gray-300 p-2 rounded" placeholder="Enter symptoms" required>
+          </div>
+
+          <!-- Diagnosis -->
+          <div class="mb-4">
+            <label class="block font-semibold mb-2">Diagnosis <span class="text-red-500">*</span></label>
+            <input type="text" id="diagnosis" class="w-full border border-gray-300 p-2 rounded" placeholder="Enter diagnosis" required>
+          </div>
+
+          <!-- Drugs Prescription -->
+          <div class="mb-6">
+            <label class="block font-semibold mb-2">Drugs Prescription:</label>
+            <textarea id="prescription" class="w-full border border-gray-300 p-2 rounded h-32" placeholder="e.g., Fukitol - 500 ml, 3 times a day for 1 week"></textarea>
+          </div>
+
+          <!-- Buttons -->
+          <div class="flex gap-3 justify-center">
+            <button type="submit" class="px-8 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all">Save</button>
+            <button type="button" onclick="closeConsultModal()" class="px-8 py-2 bg-white hover:bg-gray-100 border border-gray-300 rounded-lg transition-all">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Sample appointments data
+    let appointments = [
+      { id: 1, patientName: "John Doe", patientID: "P-2025-001", contact: "0917-123-4567", date: "2025-10-25", consultation: null },
+      { id: 2, patientName: "Maria Santos", patientID: "P-2025-002", contact: "0919-234-5678", date: "2025-10-26", consultation: null },
+      { id: 3, patientName: "Robert Cruz", patientID: "P-2025-003", contact: "0921-345-6789", date: "2025-10-25", consultation: null },
+      { id: 4, patientName: "Anna Reyes", patientID: "P-2025-004", contact: "0923-456-7890", date: "2025-10-27", consultation: null }
+    ];
+
+    let currentDate = new Date();
+    let selectedDate = null;
+    let currentAppointment = null;
+
+    // Render appointments
+    function renderAppointments(filterDate = null) {
+      const container = document.getElementById('appointmentsList');
+      const filteredAppointments = filterDate 
+        ? appointments.filter(app => app.date === filterDate)
+        : appointments;
+
+      if (filteredAppointments.length === 0) {
+        container.innerHTML = '<p class="text-center text-gray-500 py-8">No appointments found for this date</p>';
+        return;
+      }
+
+      container.innerHTML = filteredAppointments.map(app => `
+        <div class="bg-white border-2 border-slate-400 rounded-lg p-4 flex items-center justify-between">
+          <div class="flex items-center gap-4 flex-1">
+            <span class="font-semibold text-lg">${app.patientName}</span>
+            <span class="text-gray-600">${formatDate(app.date)}</span>
+          </div>
+          <button onclick="openConsultModal(${app.id})" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all">
+            Consult
+          </button>
+        </div>
+      `).join('');
+    }
+
+    // Format date
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
+    }
+
+    // Calendar functions
+    function renderCalendar() {
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
+      
+      document.getElementById('calendarMonth').textContent = 
+        currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const today = new Date();
+      
+      let html = '';
+      
+      // Empty cells before first day
+      for (let i = 0; i < firstDay; i++) {
+        html += '<div class="calendar-day"></div>';
+      }
+      
+      // Days of month
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const isToday = day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+        const isSelected = selectedDate === dateStr;
+        const hasAppointment = appointments.some(app => app.date === dateStr);
+        
+        html += `
+          <div class="calendar-day flex items-center justify-center text-sm ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}" 
+               onclick="selectDate('${dateStr}')">
+            ${day}
+            ${hasAppointment ? '<div class="w-1 h-1 bg-blue-600 rounded-full absolute"></div>' : ''}
+          </div>
+        `;
+      }
+      
+      document.getElementById('calendarDays').innerHTML = html;
+    }
+
+    function selectDate(dateStr) {
+      selectedDate = dateStr;
+      renderCalendar();
+      renderAppointments(dateStr);
+    }
+
+    function previousMonth() {
+      currentDate.setMonth(currentDate.getMonth() - 1);
+      renderCalendar();
+    }
+
+    function nextMonth() {
+      currentDate.setMonth(currentDate.getMonth() + 1);
+      renderCalendar();
+    }
+
+    // Modal functions
+    function openConsultModal(appointmentId) {
+      currentAppointment = appointments.find(app => app.id === appointmentId);
+      
+      document.getElementById('patientName').value = currentAppointment.patientName;
+      document.getElementById('patientID').value = currentAppointment.patientID;
+      document.getElementById('patientContact').value = currentAppointment.contact;
+      document.getElementById('appointmentDate').value = formatDate(currentAppointment.date);
+      
+      if (currentAppointment.consultation) {
+        document.getElementById('symptoms').value = currentAppointment.consultation.symptoms;
+        document.getElementById('diagnosis').value = currentAppointment.consultation.diagnosis;
+        document.getElementById('prescription').value = currentAppointment.consultation.prescription;
+      } else {
+        document.getElementById('symptoms').value = '';
+        document.getElementById('diagnosis').value = '';
+        document.getElementById('prescription').value = '';
+      }
+      
+      document.getElementById('consultModal').classList.remove('hidden');
+    }
+
+    function closeConsultModal() {
+      document.getElementById('consultModal').classList.add('hidden');
+      currentAppointment = null;
+    }
+
+    // Form submission
+    document.getElementById('consultForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const consultation = {
+        symptoms: document.getElementById('symptoms').value,
+        diagnosis: document.getElementById('diagnosis').value,
+        prescription: document.getElementById('prescription').value
+      };
+      
+      currentAppointment.consultation = consultation;
+      
+      alert('Consultation saved successfully!');
+      closeConsultModal();
+    });
+
+    // Initialize
+    renderAppointments();
+    renderCalendar();
+  </script>
+</body>
+</html>

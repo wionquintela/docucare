@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Staff - DocUCare System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  <style>
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <div class="h-screen w-screen flex flex-col bg-cover bg-center p-5" style="background-image: url('assets/bg_alt.png');">
+    
+    <!-- Top Navigation -->
+    <div class="h-[15%] w-full flex justify-between items-center">
+      <button onclick="window.location.href='mainMenu.html'" class="flex w-[15%] justify-start rounded bg-slate-100 border border-slate-500 hover:bg-slate-200 transition">
+        <img src="assets/banner.png" alt="Logo" class="p-2 h-full object-contain rounded animate__animated animate__fadeIn" />
+      </button>
+      
+      <h1 class="text-3xl font-bold text-blue-700">Staff</h1>
+      
+      <div class="flex items-center space-x-4">
+        <button onclick="openAddStaffModal()" class="w-12 h-12 bg-green-600 hover:bg-green-700 text-white text-2xl rounded-lg transition-all flex items-center justify-center" title="Add New Staff">
+          +
+        </button>
+        <button onclick="window.location.href='mainMenu.html'" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all">
+          Main Menu
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="h-[85%] w-full mt-3 bg-slate-100 border border-slate-400 rounded-lg shadow-lg p-6 overflow-y-auto">
+      
+      <!-- Search Bar -->
+      <div class="mb-6">
+        <input type="text" id="searchInput" placeholder="Search" class="w-full px-4 py-2 border border-gray-300 rounded-lg" oninput="filterStaff()">
+      </div>
+
+      <!-- Staff List -->
+      <div id="staffList" class="space-y-3"></div>
+    </div>
+  </div>
+
+  <!-- Add Staff Modal -->
+  <div id="addStaffModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-2xl w-[500px] animate__animated animate__fadeIn animate__faster">
+      <div class="bg-blue-600 text-white p-4 rounded-t-lg">
+        <h2 class="text-2xl font-bold">Create Staff</h2>
+      </div>
+      <div class="p-6">
+        <form id="addStaffForm">
+          <div class="space-y-4">
+            <div>
+              <label class="block font-semibold mb-2">Full Name:</label>
+              <input type="text" id="staffName" class="w-full border border-gray-300 p-2 rounded" required>
+            </div>
+            <div>
+              <label class="block font-semibold mb-2">Password:</label>
+              <input type="password" id="staffPassword" class="w-full border border-gray-300 p-2 rounded" required>
+            </div>
+            <div>
+              <label class="block font-semibold mb-2">Confirm Password:</label>
+              <input type="password" id="staffConfirmPassword" class="w-full border border-gray-300 p-2 rounded" required>
+            </div>
+            <div>
+              <label class="block font-semibold mb-2">Verification ID:</label>
+              <input type="text" id="staffVerificationID" class="w-full border border-gray-300 p-2 rounded" placeholder="Format: XXXXX-S" required>
+              <p class="text-xs text-gray-500 mt-1">Must end with -S (e.g., 12345-S)</p>
+            </div>
+          </div>
+          <div class="flex gap-3 justify-center mt-6">
+            <button type="submit" class="px-8 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all">Create Account</button>
+            <button type="button" onclick="closeAddStaffModal()" class="px-8 py-2 bg-white hover:bg-gray-100 border border-gray-300 rounded-lg transition-all">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Staff Detail Modal -->
+  <div id="staffDetailModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-2xl w-[500px] animate__animated animate__fadeIn animate__faster">
+      <div class="bg-blue-600 text-white p-4 rounded-t-lg flex justify-between items-center">
+        <h2 class="text-2xl font-bold">Staff Details</h2>
+        <button onclick="closeStaffDetailModal()" class="text-white hover:text-gray-200 text-2xl">&times;</button>
+      </div>
+      <div class="p-6">
+        <div class="space-y-3">
+          <div>
+            <p class="font-semibold text-gray-600">Name:</p>
+            <p id="detailName" class="text-lg"></p>
+          </div>
+          <div>
+            <p class="font-semibold text-gray-600">Verified ID:</p>
+            <p id="detailID" class="text-lg"></p>
+          </div>
+          <div>
+            <p class="font-semibold text-gray-600">Status:</p>
+            <p id="detailStatus" class="text-lg text-green-600">Active</p>
+          </div>
+        </div>
+        <button onclick="closeStaffDetailModal()" class="w-full mt-6 px-8 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let staffList = [
+      { name: "Livesey", verifiedID: "12345-S" },
+      { name: "yve", verifiedID: "12348-S" },
+      { name: "Lee", verifiedID: "12349-S" },
+      { name: "iiy", verifiedID: "12347-S" },
+      { name: "sey", verifiedID: "12346-S" },
+      { name: "James", verifiedID: "12344-S" }
+    ];
+
+    function renderStaffList(filteredList = staffList) {
+      const container = document.getElementById('staffList');
+      container.innerHTML = filteredList.map(staff => `
+        <div class="bg-white border-2 border-slate-400 rounded-lg p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50" onclick="showStaffDetail('${staff.name}', '${staff.verifiedID}')">
+          <button class="px-6 py-2 bg-blue-600 text-white rounded-lg">Staff</button>
+          <span class="flex-1 ml-4 text-lg">Name: ${staff.name} Verified ID: ${staff.verifiedID}</span>
+        </div>
+      `).join('');
+    }
+
+    function filterStaff() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = staffList.filter(staff => 
+        staff.name.toLowerCase().includes(searchTerm) || 
+        staff.verifiedID.toLowerCase().includes(searchTerm)
+      );
+      renderStaffList(filtered);
+    }
+
+    function openAddStaffModal() {
+      document.getElementById('addStaffModal').classList.remove('hidden');
+    }
+
+    function closeAddStaffModal() {
+      document.getElementById('addStaffModal').classList.add('hidden');
+      document.getElementById('addStaffForm').reset();
+    }
+
+    function showStaffDetail(name, id) {
+      document.getElementById('detailName').textContent = name;
+      document.getElementById('detailID').textContent = id;
+      document.getElementById('staffDetailModal').classList.remove('hidden');
+    }
+
+    function closeStaffDetailModal() {
+      document.getElementById('staffDetailModal').classList.add('hidden');
+    }
+
+    document.getElementById('addStaffForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const name = document.getElementById('staffName').value;
+      const password = document.getElementById('staffPassword').value;
+      const confirmPassword = document.getElementById('staffConfirmPassword').value;
+      const verificationID = document.getElementById('staffVerificationID').value;
+      
+      if (password !== confirmPassword) {
+        alert('Passwords do not match!');
+        return;
+      }
+      
+      if (!verificationID.endsWith('-S')) {
+        alert('Verification ID must end with -S (e.g., 12345-S)');
+        return;
+      }
+      
+      if (staffList.some(s => s.verifiedID === verificationID)) {
+        alert('This Verification ID already exists!');
+        return;
+      }
+      
+      staffList.push({ name, verifiedID: verificationID });
+      renderStaffList();
+      closeAddStaffModal();
+      alert('Staff account created successfully!');
+    });
+
+    renderStaffList();
+  </script>
+</body>
+</html>
